@@ -7,6 +7,11 @@ const App = props => {
   const [selected, setSelected] = useState(0);
   const [list, setList] = useState(init_state);
 
+  const randomNumber = () => Math.floor(Math.random() * list.length);
+  const handleDisplay = () => {
+    setSelected(randomNumber());
+  };
+
   const inCreaseVote = i => {
     const anecdoteDisplayed = list.map((anecdote, j) => {
       if (j === i) {
@@ -18,19 +23,30 @@ const App = props => {
     setList(anecdoteDisplayed);
   };
 
+  const toSee = list.map((anecdote, index) => (
+    <div key={anecdote.id}>
+      {anecdote.message}
+      <div> Has {anecdote.vote} votes.</div>
+      <button type="button" onClick={() => inCreaseVote(index)}>
+        vote
+      </button>
+    </div>
+  ));
+
+  var max = list.reduce((prev, current) => {
+    return prev.vote > current.vote ? prev : current;
+  });
   return (
     <div>
-      <ul>
-        {list.map((anecdote, index) => (
-          <li key={anecdote.id}>
-            {anecdote.message}
-            has {anecdote.vote} votes.
-            <button type="button" onClick={() => inCreaseVote(index)}>
-              Vote
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h2>Anecdote of the day</h2>
+        {toSee[selected]}
+        <button onClick={handleDisplay}>next anecdote</button>
+      </div>
+      <div>
+        <h2>Anecdote with most votes</h2>
+        {max.message}
+      </div>
     </div>
   );
 };
